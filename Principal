@@ -1,1 +1,486 @@
-n
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luisroyett Anime Blog</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- VARIABLES Y ESTILOS GLOBALES --- */
+        :root {
+            --main-color: #6c5ce7;
+            --accent: #ff7675;
+            --bg-dark: #000000;
+            --bg-card: #1a1a1a;
+            --text-white: #ffffff;
+            --text-gray: #b2bec3;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: var(--text-white);
+            padding-top: 120px; /* Espacio para el header fijo */
+            line-height: 1.6;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: var(--bg-dark);
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        /* Parte superior del header */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            border-bottom: 1px solid #333;
+        }
+
+        .brand-area { display: flex; align-items: center; }
+        
+        .header-icon {
+            width: 50px; height: 50px;
+            margin-right: 15px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--main-color);
+        }
+
+        .header-titles h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+        }
+        .header-titles span { font-size: 0.9rem; color: var(--text-gray); }
+
+        /* Navegación */
+        .header-nav {
+            display: flex;
+            justify-content: center;
+            padding: 0 5%;
+            height: 50px;
+            background-color: #111;
+        }
+
+        .nav-links { display: flex; gap: 5px; }
+
+        .nav-btn {
+            background: transparent;
+            color: var(--text-white);
+            border: none;
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active { background-color: var(--main-color); }
+
+        /* Buscador */
+        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .search-container { position: relative; display: flex; align-items: center; }
+        .search-input {
+            width: 0; padding: 0; border: none; background: transparent;
+            color: white; font-size: 1rem; transition: width 0.3s; outline: none;
+        }
+        .search-input.active { width: 200px; padding: 5px 10px; background: #222; border-radius: 4px; margin-right: 10px; }
+        .icon-btn { font-size: 1.2rem; cursor: pointer; color: var(--text-gray); background: none; border: none; }
+        .icon-btn:hover { color: var(--main-color); }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        section { margin-bottom: 60px; }
+
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--main-color);
+            padding-left: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Grid de Noticias */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border: 1px solid #333;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--main-color);
+        }
+
+        .card-img { width: 100%; height: 180px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-title { font-size: 1.1rem; margin-bottom: 8px; }
+        .card-date { font-size: 0.8rem; color: var(--main-color); }
+
+        /* Top Anime */
+        .top-list {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+        .top-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .top-item:last-child { border-bottom: none; }
+        .rank {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-right: 20px;
+            width: 30px;
+        }
+        .top-info h4 { font-size: 1.1rem; margin-bottom: 5px; }
+        .top-info span { font-size: 0.8rem; color: #888; }
+
+        /* Contacto */
+        .contact-form {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-control {
+            width: 100%; padding: 10px;
+            background: #000; border: 1px solid #333;
+            color: white; border-radius: 4px;
+        }
+        .btn-submit {
+            background: var(--main-color); color: white;
+            border: none; padding: 10px 20px;
+            border-radius: 4px; cursor: pointer; font-weight: bold;
+        }
+
+        /* --- VISTA DE ARTÍCULO --- */
+        #article-view { display: none; }
+
+        .back-btn {
+            background: #333; color: white; border: none;
+            padding: 10px 20px; border-radius: 50px;
+            cursor: pointer; margin: 20px 0; font-weight: bold;
+        }
+        .back-btn:hover { background: var(--main-color); }
+
+        .article-container {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid #333;
+        }
+
+        .article-feat-img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .article-title {
+            font-family: 'Oswald'; font-size: 2.2rem;
+            margin-bottom: 15px; line-height: 1.3;
+        }
+        .article-meta { color: var(--main-color); margin-bottom: 25px; font-size: 0.9rem; }
+        .article-content-area { color: #ddd; line-height: 1.8; margin-bottom: 30px; text-align: justify; }
+        .article-content-area p { margin-bottom: 20px; }
+        .article-content-area img { display: block; max-width: 100%; border-radius: 8px; margin: 20px auto; }
+        
+        /* Videos embebidos */
+        .video-container {
+            position: relative; padding-bottom: 56.25%; height: 0;
+            overflow: hidden; margin: 30px 0; border-radius: 8px;
+        }
+        .video-container iframe {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        /* --- COMENTARIOS --- */
+        .editor-box {
+            background: #000;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .toolbar {
+            background: #222; padding: 10px; border-radius: 4px;
+            margin-bottom: 10px; display: flex; flex-wrap: wrap;
+            gap: 10px; align-items: center;
+        }
+        .tool-btn {
+            background: #333; color: white; border: none;
+            width: 35px; height: 35px; cursor: pointer;
+            border-radius: 4px; font-weight: bold;
+        }
+        .tool-btn:hover { background: var(--main-color); }
+        .tool-select {
+            background: #333; color: white; border: none;
+            padding: 5px; border-radius: 4px; height: 35px;
+        }
+        .editor-content {
+            min-height: 150px; background: #1a1a1a; padding: 15px;
+            border-radius: 4px; color: white; border: 1px solid #333;
+            outline: none;
+        }
+        .comment-card {
+            background: #1a1a1a; padding: 15px; border-radius: 4px;
+            margin-top: 15px; border-left: 3px solid var(--main-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav { height: auto; padding: 10px 0; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .article-feat-img { height: 220px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="brand-area">
+                <img src="https://placehold.co/100x100/6c5ce7/ffffff?text=L" alt="Logo" class="header-icon">
+                <div class="header-titles">
+                    <h1>Luisroyett Anime</h1>
+                    <span>Tu portal de noticias y novedades</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="search-container">
+                    <input type="text" id="search-bar" class="search-input" placeholder="Buscar noticias...">
+                    <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+                </div>
+            </div>
+        </div>
+        <nav class="header-nav">
+            <div class="nav-links">
+                <a href="#section-inicio"><button class="nav-btn active">Inicio</button></a>
+                <a href="#section-noticias"><button class="nav-btn">Noticias</button></a>
+                <a href="#section-top"><button class="nav-btn">Top Anime</button></a>
+                <a href="#section-contacto"><button class="nav-btn">Contacto</button></a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <!-- INICIO -->
+        <section id="home-view">
+            <section id="section-inicio">
+                <div class="section-title">Bienvenidos</div>
+                <p style="margin-bottom:20px;">Hola, soy Luisroyett. Bienvenidos a mi blog de anime. Aquí encontrarán las mejores reseñas, noticias y tops del momento.</p>
+            </section>
+
+            <!-- NOTICIAS -->
+            <section id="section-noticias">
+                <div class="section-title">Últimas Noticias</div>
+                <div class="news-grid" id="news-container"></div>
+            </section>
+
+            <!-- TOP ANIME -->
+            <section id="section-top">
+                <div class="section-title">Top Anime de la Semana</div>
+                <div class="top-list" id="top-list-container"></div>
+            </section>
+
+            <!-- CONTACTO -->
+            <section id="section-contacto">
+                <div class="section-title">Contacto</div>
+                <div class="contact-form">
+                    <div class="form-group"><input type="text" class="form-control" placeholder="Tu Nombre"></div>
+                    <div class="form-group"><input type="email" class="form-control" placeholder="Tu Email"></div>
+                    <div class="form-group"><textarea class="form-control" rows="4" placeholder="Tu Mensaje"></textarea></div>
+                    <button class="btn-submit">Enviar Mensaje</button>
+                </div>
+            </section>
+        </section>
+
+        <!-- VISTA ARTÍCULO -->
+        <section id="article-view">
+            <button class="back-btn" onclick="closeArticle()">← Volver al Inicio</button>
+            <article class="article-container">
+                <img id="a-img" src="" alt="" class="article-feat-img">
+                <h2 id="a-title" class="article-title"></h2>
+                <div id="a-meta" class="article-meta"></div>
+                <div id="a-content" class="article-content-area"></div>
+
+                <!-- Comentarios -->
+                <div class="editor-box">
+                    <h3>Deja tu Comentario</h3>
+                    <div class="toolbar">
+                        <button class="tool-btn" onclick="formatDoc('bold')"><b>B</b></button>
+                        <button class="tool-btn" onclick="formatDoc('italic')"><i>I</i></button>
+                        <button class="tool-btn" onclick="formatDoc('underline')"><u>U</u></button>
+                        <select class="tool-select" onchange="formatDoc('fontName', this.value)">
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times</option>
+                        </select>
+                        <select class="tool-select" onchange="formatDoc('fontSize', this.value)">
+                            <option value="3">Normal</option>
+                            <option value="1">Pequeño</option>
+                            <option value="5">Grande</option>
+                        </select>
+                        <input type="color" class="tool-select" style="padding:0; width:35px; height:35px; border:none;" onchange="formatDoc('foreColor', this.value)" title="Color">
+                    </div>
+                    <div id="editor-content" class="editor-content" contenteditable="true"></div>
+                    <button class="btn-submit" onclick="submitComment()">Publicar</button>
+                    <div id="comments-list" style="margin-top:15px;"></div>
+                </div>
+            </article>
+        </section>
+    </div>
+
+    <script>
+        // --- SINCRONIZACIÓN EN TIEMPO REAL Y CARGA ---
+        
+        // 1. Escucha cambios desde el Panel Admin
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'blogSyncTrigger') {
+                console.log("Actualizando contenido desde el panel...");
+                loadAll();
+            }
+        });
+
+        // 2. Cargar datos al iniciar
+        const defaultNews = [{ id: 1, title: "Bienvenidos al Blog", img: "https://placehold.co/800x400/555/fff?text=Hola", date: "Hoy", content: "<p>Empieza a crear contenido desde el panel admin.</p>", comments: [] }];
+        const defaultTop = [
+            { rank: 1, title: "Frieren", genre: "Fantasía" }, 
+            { rank: 2, title: "One Piece", genre: "Aventura" }, 
+            { rank: 3, title: "Jujutsu Kaisen", genre: "Acción" }
+        ];
+        
+        let newsData = JSON.parse(localStorage.getItem('blogNews')) || defaultNews;
+        let topAnimeData = JSON.parse(localStorage.getItem('topAnime')) || defaultTop;
+        let currentArticleId = null;
+
+        function loadAll() {
+            // Recargar variables por si cambiaron
+            newsData = JSON.parse(localStorage.getItem('blogNews')) || defaultNews;
+            topAnimeData = JSON.parse(localStorage.getItem('topAnime')) || defaultTop;
+            
+            loadNews();
+            loadTopAnime();
+        }
+
+        function loadNews() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = '';
+            newsData.forEach(n => {
+                container.innerHTML += `
+                    <div class="card" onclick="openArticle(${n.id})">
+                        <img src="${n.img}" class="card-img">
+                        <div class="card-body">
+                            <div class="card-date">${n.date}</div>
+                            <h3 class="card-title">${n.title}</h3>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function loadTopAnime() {
+            const container = document.getElementById('top-list-container');
+            container.innerHTML = '';
+            topAnimeData.forEach(item => {
+                container.innerHTML += `
+                    <div class="top-item">
+                        <div class="rank">${item.rank}</div>
+                        <div class="top-info">
+                            <h4>${item.title}</h4>
+                            <span>${item.genre}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- NAVEGACIÓN ARTÍCULOS ---
+        function openArticle(id) {
+            currentArticleId = id;
+            const n = newsData.find(item => item.id === id);
+            if(!n) return;
+            
+            document.getElementById('a-img').src = n.img;
+            document.getElementById('a-title').innerText = n.title;
+            document.getElementById('a-meta').innerText = n.date + " - Por Luisroyett";
+            document.getElementById('a-content').innerHTML = n.content;
+            
+            const list = document.getElementById('comments-list');
+            list.innerHTML = '';
+            if(n.comments && n.comments.length > 0) {
+                n.comments.forEach(c => {
+                    list.innerHTML += `<div class="comment-card"><div style="color:var(--main-color); font-weight:bold;">@${c.name}</div><div style="margin-top:5px;">${c.text}</div></div>`;
+                });
+            }
+            
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('article-view').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function closeArticle() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('article-view').style.display = 'none';
+        }
+
+        function toggleSearch() {
+            const input = document.getElementById('search-bar');
+            input.classList.toggle('active');
+            if(input.classList.contains('active')) input.focus();
+        }
+
+        // --- EDITOR COMENTARIOS ---
+        function formatDoc(cmd, value=null) {
+            if(value) document.execCommand(cmd, false, value);
+            else document.execCommand(cmd, false, null);
+        }
+
+        function submitComment() {
+            const content = document.getElementById('editor-content').innerHTML;
+            if(content.trim() === "") return;
+            
+            // Simulación de guardado (para guardar realmente habría que modificar el array y el localStorage)
+            const list = document.getElementById('comments-list');
+            list.innerHTML = `<div class="comment-card"><div style="color:var(--main-color); font-weight:bold;">@Usuario</div><div style="margin-top:5px;">${content}</div></div>` + list.innerHTML;
+            document.getElementById('editor-content').innerHTML = '';
+        }
+
+        // Inicio
+        loadAll();
+
+    </script>
+</body>
+</html>
+
+
+
+
