@@ -3,467 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Anime - Luisroyett</title>
+    <title>Admin Panel - Luisroyett</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --main-color: #6c5ce7;
-            --accent: #ff7675;
-            --bg-dark: #000000;
-            --bg-card: #1a1a1a;
-            --text-white: #ffffff;
-            --text-gray: #b2bec3;
-        }
+        :root { --main-color: #6c5ce7; --accent: #ff7675; --bg-dark: #0a0a0a; --bg-card: #1e1e2f; --text-white: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--bg-dark); color: var(--text-white); height: 100vh; overflow: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Roboto', sans-serif; background-color: #121212; color: var(--text-white); padding-top: 120px; }
+        /* Login Screen */
+        #login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; display: flex; justify-content: center; align-items: center; z-index: 3000; flex-direction: column; }
+        .login-box { background: #1a1a1a; padding: 40px; border-radius: 10px; text-align: center; border: 1px solid #333; }
+        .login-box h2 { margin-bottom: 20px; color: var(--main-color); }
+        .login-box input { padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #444; background: #000; color: white; width: 200px; }
+        .login-box button { padding: 10px 30px; background: var(--main-color); border: none; color: white; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        /* --- HEADER --- */
-        header { position: fixed; top: 0; width: 100%; background-color: var(--bg-dark); z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid #333; }
-        .brand-area { display: flex; align-items: center; }
-        .header-icon { width: 50px; height: 50px; margin-right: 15px; border-radius: 50%; object-fit: cover; border: 2px solid var(--main-color); }
-        .header-titles h1 { font-family: 'Oswald', sans-serif; font-size: 1.8rem; text-transform: uppercase; }
-        .header-titles span { font-size: 0.9rem; color: var(--text-gray); }
-
-        .header-actions { display: flex; align-items: center; gap: 20px; }
-        .search-container { position: relative; display: flex; align-items: center; }
-        .search-input { width: 0; padding: 0; border: none; background: transparent; color: white; font-size: 1rem; transition: width 0.3s; outline: none; }
-        .search-input.active { width: 200px; padding: 5px 10px; background: #222; border-radius: 4px; margin-right: 10px; }
-        .icon-btn { font-size: 1.2rem; cursor: pointer; color: var(--text-gray); background: none; border: none; }
-        .icon-btn:hover { color: var(--main-color); }
-
-        .header-nav { display: flex; justify-content: center; padding: 0 5%; height: 50px; background-color: #111; }
-        .nav-links { display: flex; gap: 5px; }
-        .nav-btn { background: transparent; color: var(--text-white); border: none; padding: 10px 25px; cursor: pointer; border-radius: 4px; transition: all 0.2s; text-transform: uppercase; }
-        .nav-btn:hover, .nav-btn.active { background-color: var(--main-color); }
-
-        /* --- CONTENIDO PRINCIPAL --- */
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-        section { margin-bottom: 60px; }
-        .section-title { font-family: 'Oswald', sans-serif; font-size: 1.5rem; margin-bottom: 20px; border-left: 5px solid var(--main-color); padding-left: 15px; text-transform: uppercase; }
-        
-        /* Noticias */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--bg-card); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; border: 1px solid #333; }
-        .card:hover { transform: translateY(-5px); border-color: var(--main-color); }
-        .card-img { width: 100%; height: 180px; object-fit: cover; }
-        .card-body { padding: 15px; }
-        .card-title { font-size: 1.1rem; margin-bottom: 8px; }
-        .card-date { font-size: 0.8rem; color: var(--main-color); }
-
-        /* Top Anime (Restaurado y Dinámico) */
-        .top-list { background: var(--bg-card); border-radius: 8px; padding: 20px; border: 1px solid #333; }
-        .top-item { display: flex; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #333; }
-        .top-item:last-child { border-bottom: none; margin-bottom: 0; }
-        .rank { font-size: 2rem; font-weight: bold; color: var(--main-color); margin-right: 20px; width: 30px; }
-        .top-info h4 { font-size: 1.1rem; margin-bottom: 5px; }
-        .top-info span { font-size: 0.8rem; color: #888; }
-
-        /* Contacto (Restaurado) */
-        .contact-form { background: var(--bg-card); padding: 30px; border-radius: 8px; border: 1px solid #333; }
-        .form-group { margin-bottom: 15px; }
-        .form-control { width: 100%; padding: 10px; background: #000; border: 1px solid #333; color: white; border-radius: 4px; }
-
-        /* --- VISTA ARTÍCULO --- */
-        #article-view { display: none; }
-        .back-btn { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 50px; cursor: pointer; margin: 20px 0; font-weight: bold; }
-        .back-btn:hover { background: var(--main-color); }
-        .article-container { background: var(--bg-card); border-radius: 10px; padding: 30px; border: 1px solid #333; }
-        .article-feat-img { width: 100%; height: 400px; object-fit: cover; border-radius: 8px; margin-bottom: 20px; }
-        .article-title { font-family: 'Oswald'; font-size: 2.2rem; margin-bottom: 15px; line-height: 1.3; }
-        .article-meta { color: var(--main-color); margin-bottom: 25px; font-size: 0.9rem; }
-        .article-content-area { color: #ddd; line-height: 1.8; margin-bottom: 30px; text-align: justify; }
-        .article-content-area p { margin-bottom: 20px; }
-        .article-content-area img { display: block; max-width: 100%; border-radius: 8px; margin: 20px auto; }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; margin: 30px 0; border-radius: 8px; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        /* --- COMENTARIOS CON EDITOR MEJORADO --- */
-        .editor-box { background: #000; padding: 20px; border-radius: 8px; border: 1px solid #333; }
-        .toolbar { background: #222; padding: 10px; border-radius: 4px; margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .tool-btn { background: #333; color: white; border: none; width: 35px; height: 35px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
-        .tool-btn:hover { background: var(--main-color); }
-        .tool-select { background: #333; color: white; border: none; padding: 5px; border-radius: 4px; height: 35px; }
-        .editor-content { min-height: 150px; background: #1a1a1a; padding: 15px; border-radius: 4px; color: white; border: 1px solid #333; outline: none; }
-        .editor-content:focus { border-color: var(--main-color); }
-        .btn-submit { background: var(--main-color); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .comment-card { background: #1a1a1a; padding: 15px; border-radius: 4px; margin-top: 15px; border-left: 3px solid var(--main-color); }
-
-        /* --- PANEL ADMIN AVANZADO --- */
-        .admin-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 2000; flex-direction: column; }
-        
+        /* Admin Layout */
+        .admin-container { display: none; height: 100vh; flex-direction: column; }
         .admin-topbar { background: #111; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
-        .admin-topbar h2 { color: var(--main-color); font-family: 'Oswald'; letter-spacing: 1px; }
-        .admin-close-btn { background: #ff4757; color: white; border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .admin-topbar h2 { color: var(--main-color); font-family: 'Oswald'; }
+        .admin-body { display: flex; flex: 1; overflow: hidden; }
 
-        /* Pestañas del Admin */
-        .admin-tabs { display: flex; background: #0a0a0a; border-bottom: 1px solid #333; }
-        .tab-btn { flex: 1; padding: 15px; background: transparent; border: none; color: #888; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .tab-btn.active { background: #1e1e2f; color: var(--main-color); border-bottom: 3px solid var(--main-color); }
+        /* Sidebar */
+        .sidebar { width: 300px; background: #0f0f0f; border-right: 1px solid #333; padding: 20px; overflow-y: auto; }
+        .sidebar-section { margin-bottom: 20px; }
+        .sidebar-section label { display: block; font-size: 0.8rem; text-transform: uppercase; color: #888; margin-bottom: 5px; }
+        .sidebar-section input, .sidebar-section textarea { width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; }
+        .file-box { border: 1px dashed #555; padding: 20px; text-align: center; cursor: pointer; border-radius: 8px; }
+        .file-box img { max-width: 100%; margin-top: 10px; border-radius: 4px; }
 
-        .admin-body { flex: 1; display: flex; height: calc(100% - 110px); overflow: hidden; }
+        /* Main Builder */
+        .main-builder { flex: 1; background: #151521; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .builder-tools { display: flex; gap: 10px; margin-bottom: 20px; position: sticky; top: 0; background: #151521; padding-bottom: 10px; z-index: 10; }
+        .btn-add { background: #333; color: white; padding: 8px 15px; border: 1px solid #555; border-radius: 4px; cursor: pointer; }
+        .btn-add:hover { background: var(--main-color); border-color: var(--main-color); }
 
-        /* Pestaña Noticias */
-        .tab-content { display: none; height: 100%; width: 100%; }
+        /* Blocks */
+        .block { background: #2d3436; border: 1px solid #444; border-radius: 8px; margin-bottom: 15px; }
+        .block-header { background: #222; padding: 8px 15px; display: flex; justify-content: space-between; border-radius: 8px 8px 0 0; border-bottom: 1px solid #444; }
+        .block-title { font-weight: bold; color: var(--main-color); font-size: 0.9rem; }
+        .block-actions button { background: transparent; border: none; color: #888; cursor: pointer; margin-left: 5px; }
+        .block-content { padding: 15px; }
+
+        /* Rich Editor inside Block */
+        .mini-toolbar { display: flex; gap: 5px; margin-bottom: 10px; background: #222; padding: 5px; border-radius: 4px; }
+        .mini-btn { background: #333; border: none; color: white; padding: 5px 8px; border-radius: 3px; cursor: pointer; }
+        .mini-select { background: #333; border: none; color: white; padding: 5px; border-radius: 3px; }
+        .rich-input { min-height: 100px; background: #1a1a1a; padding: 10px; border-radius: 4px; border: 1px solid #333; outline: none; color: white; }
+
+        /* Tabs */
+        .tabs { display: flex; background: #0f0f0f; border-bottom: 1px solid #333; }
+        .tab { padding: 15px 30px; cursor: pointer; color: #888; border-bottom: 2px solid transparent; }
+        .tab.active { color: var(--main-color); border-bottom: 2px solid var(--main-color); background: #151521; }
+
+        .tab-content { display: none; flex: 1; }
         .tab-content.active { display: flex; }
 
-        .admin-sidebar { width: 350px; background: #0a0a0a; padding: 20px; border-right: 1px solid #333; overflow-y: auto; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; margin-bottom: 8px; color: var(--text-gray); font-size: 0.9rem; text-transform: uppercase; }
-        .input-group input, .input-group textarea { width: 100%; padding: 10px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; }
-        .file-upload-box { border: 2px dashed #444; padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; }
-        .file-upload-box img { max-width: 100%; max-height: 150px; margin-top: 10px; border-radius: 4px; }
+        /* Top Editor */
+        .top-editor { padding: 40px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .top-item-edit { background: #222; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
+        .rank-num { font-size: 1.5rem; color: var(--main-color); width: 30px; text-align: center; }
 
-        .admin-builder { flex: 1; background: #1e1e2f; padding: 20px; overflow-y: auto; position: relative; }
-        .builder-tools { display: flex; gap: 10px; margin-bottom: 20px; padding: 10px 0; z-index: 10; }
-        .add-block-btn { background: #333; color: white; border: 1px solid #555; padding: 10px 20px; border-radius: 4px; cursor: pointer; }
-        .add-block-btn:hover { background: var(--main-color); border-color: var(--main-color); }
-
-        /* Bloques */
-        .content-block { background: #2d3436; border: 1px solid #444; border-radius: 8px; margin-bottom: 15px; }
-        .block-header { background: #222; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; border-radius: 8px 8px 0 0; }
-        .block-type { font-weight: bold; color: var(--main-color); font-size: 0.9rem; }
-        .block-actions button { background: transparent; color: #888; border: none; cursor: pointer; margin-left: 5px; font-size: 1rem; }
-        .block-actions button:hover { color: white; }
-        .block-body { padding: 15px; }
-
-        /* Editor dentro del bloque */
-        .block-editor { min-height: 100px; background: #1a1a1a; padding: 10px; border-radius: 4px; color: white; border: 1px solid #333; outline: none; }
-        .mini-toolbar { display: flex; gap: 5px; margin-bottom: 10px; }
-
-        /* Pestaña Top Anime */
-        .top-editor-area { padding: 40px; width: 100%; max-width: 600px; margin: 0 auto; }
-        .top-edit-item { background: #222; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
-        .top-edit-rank { font-size: 2rem; color: var(--main-color); font-weight: bold; width: 40px; text-align: center; }
-        
-        .publish-footer { padding: 20px; background: #111; text-align: right; border-top: 1px solid #333; }
-        .btn-publish-final { background: linear-gradient(90deg, var(--main-color), var(--accent)); color: white; border: none; padding: 12px 40px; border-radius: 4px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
-
-        /* Responsive Admin */
-        @media (max-width: 768px) {
-            .admin-body { flex-direction: column; height: auto; }
-            .admin-sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #333; }
-            .admin-builder { height: auto; }
-        }
+        .btn-publish { background: linear-gradient(90deg, var(--main-color), var(--accent)); color: white; border: none; padding: 15px; font-size: 1.2rem; font-weight: bold; cursor: pointer; width: 100%; margin-top: auto; }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="header-top">
-            <div class="brand-area">
-                <img src="https://placehold.co/100x100/6c5ce7/ffffff?text=L" alt="Logo" class="header-icon">
-                <div class="header-titles">
-                    <h1>Luisroyett Anime</h1>
-                    <span>Tu portal de noticias y novedades</span>
-                </div>
-            </div>
-            <div class="header-actions">
-                <div class="search-container">
-                    <input type="text" id="search-bar" class="search-input" placeholder="Buscar noticias...">
-                    <button class="icon-btn" onclick="toggleSearch()">🔍</button>
-                </div>
-                <button class="icon-btn" onclick="checkPassword()">🔒</button>
-            </div>
+    <!-- Login -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>Acceso Administrador</h2>
+            <input type="password" id="pass-input" placeholder="Contraseña">
+            <br>
+            <button onclick="login()">Entrar</button>
         </div>
-        <nav class="header-nav">
-            <div class="nav-links">
-                <a href="#section-inicio"><button class="nav-btn active">Inicio</button></a>
-                <a href="#section-noticias"><button class="nav-btn">Noticias</button></a>
-                <a href="#section-top"><button class="nav-btn">Top Anime</button></a>
-                <a href="#section-contacto"><button class="nav-btn">Contacto</button></a>
-            </div>
-        </nav>
-    </header>
+    </div>
 
-    <!-- PANEL ADMIN -->
-    <div class="admin-panel" id="admin-panel">
+    <!-- Admin App -->
+    <div class="admin-container" id="admin-app">
         <div class="admin-topbar">
-            <h2>⚙️ Panel de Administración</h2>
-            <button class="admin-close-btn" onclick="closeAdmin()">Cerrar Panel</button>
+            <h2>Panel de Control - Luisroyett</h2>
+            <button onclick="location.href='index.html'" style="background:#333; color:white; padding:8px 15px; border:none; cursor:pointer;">Ver Blog</button>
         </div>
-        
-        <!-- Pestañas -->
-        <div class="admin-tabs">
-            <button class="tab-btn active" onclick="switchTab('news-tab')">Crear Noticias</button>
-            <button class="tab-btn" onclick="switchTab('top-tab')">Editar Top Anime</button>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab(0)">Crear Noticias</div>
+            <div class="tab" onclick="switchTab(1)">Editar Top Anime</div>
         </div>
 
         <div class="admin-body">
-            
-            <!-- PESTAÑA 1: NOTICIAS -->
-            <div id="news-tab" class="tab-content active">
-                <div class="admin-sidebar">
-                    <div class="input-group">
-                        <label>Título Principal</label>
-                        <input type="text" id="main-title" placeholder="Título de la entrada">
+            <!-- TAB 1: NEWS -->
+            <div class="tab-content active" id="tab-news">
+                <div class="sidebar">
+                    <div class="sidebar-section">
+                        <label>Título de la Noticia</label>
+                        <input type="text" id="main-title">
                     </div>
-                    
-                    <div class="input-group">
+                    <div class="sidebar-section">
                         <label>Imagen de Portada</label>
-                        <div class="file-upload-box" onclick="document.getElementById('cover-upload').click()">
-                            <input type="file" id="cover-upload" hidden accept="image/*" onchange="previewCover(this)">
-                            <span id="cover-placeholder">📷 Seleccionar archivo</span>
-                            <img id="cover-preview" src="" alt="" style="display:none;">
+                        <div class="file-box" onclick="document.getElementById('cover-input').click()">
+                            <input type="file" id="cover-input" hidden accept="image/*" onchange="previewCover(this)">
+                            <span id="cover-text">📷 Subir Imagen</span>
+                            <img id="cover-preview" src="" style="display:none; width:100%;">
                         </div>
                     </div>
-                    <div class="input-group">
+                    <div class="sidebar-section">
                         <label>Fecha</label>
                         <input type="text" id="main-date" disabled>
                     </div>
                 </div>
 
-                <div class="admin-builder">
+                <div class="main-builder">
                     <div class="builder-tools">
-                        <button class="add-block-btn" onclick="addBlock('text')">📝 Texto</button>
-                        <button class="add-block-btn" onclick="addBlock('image')">🖼 Imagen</button>
-                        <button class="add-block-btn" onclick="addBlock('video')">▶️ Video</button>
+                        <button class="btn-add" onclick="addBlock('text')">📝 Texto</button>
+                        <button class="btn-add" onclick="addBlock('image')">🖼 Imagen</button>
+                        <button class="btn-add" onclick="addBlock('video')">▶️ Video</button>
                     </div>
-
                     <div id="blocks-container"></div>
-
-                    <div class="publish-footer" style="background: transparent; position: sticky; bottom: 0;">
-                        <button class="btn-publish-final" onclick="publishArticle()">🚀 PUBLICAR NOTICIA</button>
-                    </div>
+                    <button class="btn-publish" onclick="publishNews()">🚀 PUBLICAR NOTICIA</button>
                 </div>
             </div>
 
-            <!-- PESTAÑA 2: TOP ANIME -->
-            <div id="top-tab" class="tab-content">
-                <div class="top-editor-area">
-                    <h3 style="margin-bottom: 20px; color: var(--main-color);">Edita los Top de la Semana</h3>
-                    
-                    <div id="top-editor-list">
-                        <!-- Se genera con JS -->
-                    </div>
-
-                    <button class="btn-publish-final" onclick="saveTopAnime()">💾 GUARDAR CAMBIOS</button>
+            <!-- TAB 2: TOP -->
+            <div class="tab-content" id="tab-top">
+                <div class="top-editor">
+                    <h2 style="margin-bottom:20px; border-bottom:1px solid #444; padding-bottom:10px;">Editar Ranking Semanal</h2>
+                    <div id="top-editor-list"></div>
+                    <button class="btn-publish" onclick="saveTop()">💾 GUARDAR TOP</button>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <!-- CONTENIDO WEB -->
-    <div class="container">
-        <section id="home-view">
-            <section id="section-inicio">
-                <div class="section-title">Bienvenidos</div>
-                <p style="margin-bottom:20px;">Hola, soy Luisroyett. Bienvenidos a mi blog de anime. Utiliza el candado 🔒 arriba a la derecha (contraseña: luisroyett) para entrar al panel de administración.</p>
-            </section>
-
-            <section id="section-noticias">
-                <div class="section-title">Últimas Noticias</div>
-                <div class="news-grid" id="news-container"></div>
-            </section>
-
-            <section id="section-top">
-                <div class="section-title">Top Anime de la Semana</div>
-                <div class="top-list" id="top-list-container">
-                    <!-- Se genera con JS -->
-                </div>
-            </section>
-
-            <section id="section-contacto">
-                <div class="section-title">Contacto</div>
-                <div class="contact-form">
-                    <div class="form-group"><input type="text" class="form-control" placeholder="Tu Nombre"></div>
-                    <div class="form-group"><input type="email" class="form-control" placeholder="Tu Email"></div>
-                    <div class="form-group"><textarea class="form-control" rows="4" placeholder="Tu Mensaje"></textarea></div>
-                    <button class="btn-submit">Enviar Mensaje</button>
-                </div>
-            </section>
-        </section>
-
-        <!-- VISTA ARTÍCULO -->
-        <section id="article-view">
-            <button class="back-btn" onclick="closeArticle()">← Volver</button>
-            <article class="article-container">
-                <img id="a-img" src="" alt="" class="article-feat-img">
-                <h2 id="a-title" class="article-title"></h2>
-                <div id="a-meta" class="article-meta"></div>
-                <div id="a-content" class="article-content-area"></div>
-
-                <!-- Comentarios con editor rico -->
-                <div class="editor-box">
-                    <h3>Deja tu Comentario</h3>
-                    <div class="toolbar">
-                        <button class="tool-btn" onclick="formatDoc('bold')"><b>B</b></button>
-                        <button class="tool-btn" onclick="formatDoc('italic')"><i>I</i></button>
-                        <button class="tool-btn" onclick="formatDoc('underline')"><u>U</b></button>
-                        <select class="tool-select" onchange="formatDoc('fontName', this.value)">
-                            <option value="Arial">Arial</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Times New Roman">Times</option>
-                            <option value="Courier New">Courier</option>
-                        </select>
-                        <select class="tool-select" onchange="formatDoc('fontSize', this.value)">
-                            <option value="3">Normal</option>
-                            <option value="1">Pequeño</option>
-                            <option value="5">Grande</option>
-                        </select>
-                        <input type="color" class="tool-select" style="padding:0; width:35px; height:35px; border:none;" onchange="formatDoc('foreColor', this.value)" title="Color de texto">
-                    </div>
-                    <div id="editor-content" class="editor-content" contenteditable="true"></div>
-                    <button class="btn-submit" onclick="submitComment()">Publicar</button>
-                    <div id="comments-list" style="margin-top:15px;"></div>
-                </div>
-            </article>
-        </section>
-    </div>
-
     <script>
-        // --- DATOS INICIALES Y LOCALSTORAGE ---
-        const defaultNews = [
-            { id: 1, title: "One Piece: El Gear 5", img: "https://placehold.co/800x400/555/fff?text=One+Piece", date: "25 Oct 2023", content: "<p>Noticia de prueba.</p>", comments: [] }
-        ];
-        
-        const defaultTopAnime = [
-            { rank: 1, title: "Frieren: Beyond Journey's End", genre: "Fantasía" },
-            { rank: 2, title: "Jujutsu Kaisen S2", genre: "Acción" },
-            { rank: 3, title: "One Piece", genre: "Aventura" }
-        ];
-
-        let newsData = JSON.parse(localStorage.getItem('blogNews')) || defaultNews;
-        let topAnimeData = JSON.parse(localStorage.getItem('topAnime')) || defaultTopAnime;
-
-        // Variables Admin
-        let contentBlocks = [];
-        let blockIdCounter = 0;
-
-        // --- FUNCIONES DE CARGA INICIAL ---
-        function loadAll() {
-            loadNews();
-            loadTopAnime();
-        }
-
-        function loadNews() {
-            const container = document.getElementById('news-container');
-            container.innerHTML = '';
-            newsData.forEach(n => {
-                container.innerHTML += `
-                    <div class="card" onclick="openArticle(${n.id})">
-                        <img src="${n.img}" class="card-img">
-                        <div class="card-body">
-                            <div class="card-date">${n.date}</div>
-                            <h3 class="card-title">${n.title}</h3>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function loadTopAnime() {
-            const container = document.getElementById('top-list-container');
-            container.innerHTML = '';
-            topAnimeData.forEach(item => {
-                container.innerHTML += `
-                    <div class="top-item">
-                        <div class="rank">${item.rank}</div>
-                        <div class="top-info">
-                            <h4>${item.title}</h4>
-                            <span>${item.genre}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // --- LÓGICA DE NAVEGACIÓN ---
-        function openArticle(id) {
-            const n = newsData.find(item => item.id === id);
-            if(!n) return;
-            
-            document.getElementById('a-img').src = n.img;
-            document.getElementById('a-title').innerText = n.title;
-            document.getElementById('a-meta').innerText = n.date + " - Por Luisroyett";
-            document.getElementById('a-content').innerHTML = n.content;
-            
-            const list = document.getElementById('comments-list');
-            list.innerHTML = '';
-            if(n.comments) {
-                n.comments.forEach(c => {
-                    list.innerHTML += `<div class="comment-card"><div style="color:var(--main-color); font-weight:bold;">@${c.name}</div><div style="margin-top:5px;">${c.text}</div></div>`;
-                });
+        // --- Lógica Login ---
+        function login() {
+            const pass = document.getElementById('pass-input').value;
+            if(pass === "luisroyett") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-app').style.display = 'flex';
+                initAdmin();
+            } else {
+                alert("Contraseña incorrecta");
             }
-            
-            document.getElementById('editor-content').innerHTML = '';
-            document.getElementById('home-view').style.display = 'none';
-            document.getElementById('article-view').style.display = 'block';
-            window.scrollTo(0, 0);
         }
 
-        function closeArticle() {
-            document.getElementById('home-view').style.display = 'block';
-            document.getElementById('article-view').style.display = 'none';
-        }
-
-        function toggleSearch() {
-            const input = document.getElementById('search-bar');
-            input.classList.toggle('active');
-            if(input.classList.contains('active')) input.focus();
-        }
-
-        // Función genérica para aplicar formato
-        function formatDoc(cmd, value=null) {
-            if(value) document.execCommand(cmd, false, value);
-            else document.execCommand(cmd, false, null);
-        }
-
-        function submitComment() {
-            const content = document.getElementById('editor-content').innerHTML;
-            if(content.trim() === "") return;
-            
-            // Simulación simple
-            const list = document.getElementById('comments-list');
-            list.innerHTML = `<div class="comment-card"><div style="color:var(--main-color); font-weight:bold;">@Usuario</div><div style="margin-top:5px;">${content}</div></div>` + list.innerHTML;
-            document.getElementById('editor-content').innerHTML = '';
-        }
-
-        // --- LÓGICA DEL PANEL ADMIN ---
-
-        function checkPassword() {
-            const pass = prompt("Contraseña:");
-            if(pass === "luisroyett") openAdmin();
-            else if(pass !== null) alert("Incorrecta");
-        }
-
-        function openAdmin() {
-            document.getElementById('admin-panel').style.display = 'flex';
-            // Resetear formularios
-            document.getElementById('main-title').value = '';
-            document.getElementById('cover-preview').style.display = 'none';
-            document.getElementById('cover-placeholder').style.display = 'block';
+        // --- Init ---
+        let blocks = [];
+        let blockCount = 0;
+        
+        function initAdmin() {
+            // Fecha
             document.getElementById('main-date').value = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + " - Luisroyett";
-            contentBlocks = [];
-            blockIdCounter = 0;
-            renderBlocks();
             
-            // Cargar datos de Top Anime en el editor
-            const topList = document.getElementById('top-editor-list');
-            topList.innerHTML = '';
-            topAnimeData.forEach((item, index) => {
-                topList.innerHTML += `
-                    <div class="top-edit-item">
-                        <div class="top-edit-rank">${item.rank}</div>
+            // Cargar Top actual en editor
+            const topData = JSON.parse(localStorage.getItem('topAnime')) || [
+                {rank:1, title:"Frieren", genre:"Fantasia"}, 
+                {rank:2, title:"One Piece", genre:"Aventura"}, 
+                {rank:3, title:"JJK", genre:"Accion"}
+            ];
+            const list = document.getElementById('top-editor-list');
+            list.innerHTML = '';
+            topData.forEach((item, i) => {
+                list.innerHTML += `
+                    <div class="top-item-edit">
+                        <div class="rank-num">${i+1}</div>
                         <div style="flex:1;">
-                            <input type="text" id="top-title-${index}" value="${item.title}" style="width:100%; margin-bottom:5px; padding:5px; background:#333; border:1px solid #555; color:white;">
-                            <input type="text" id="top-genre-${index}" value="${item.genre}" style="width:100%; padding:5px; background:#333; border:1px solid #555; color:white;">
+                            <input type="text" id="top-title-${i}" value="${item.title}" style="width:100%; margin-bottom:5px; padding:8px; background:#333; border:1px solid #555; color:white;">
+                            <input type="text" id="top-genre-${i}" value="${item.genre}" style="width:100%; padding:8px; background:#333; border:1px solid #555; color:white;">
                         </div>
                     </div>
                 `;
             });
         }
 
-        function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+        function switchTab(index) {
+            document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === index));
+            document.querySelectorAll('.tab-content').forEach((c, i) => c.classList.toggle('active', i === index));
+        }
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+        // --- Builder Logic ---
+        function addBlock(type) {
+            blocks.push({ id: blockCount++, type: type, content: '' });
+            renderBlocks();
+        }
+
+        function moveBlock(id, dir) {
+            const idx = blocks.findIndex(b => b.id === id);
+            if(dir === 'up' && idx > 0) [blocks[idx], blocks[idx-1]] = [blocks[idx-1], blocks[idx]];
+            if(dir === 'down' && idx < blocks.length-1) [blocks[idx], blocks[idx+1]] = [blocks[idx+1], blocks[idx]];
+            renderBlocks();
+        }
+
+        function deleteBlock(id) {
+            blocks = blocks.filter(b => b.id !== id);
+            renderBlocks();
+        }
+
+        function renderBlocks() {
+            const container = document.getElementById('blocks-container');
+            container.innerHTML = '';
+            blocks.forEach(b => {
+                let html = '';
+                
+                // Bloque Texto con Editor Rico
+                if(b.type === 'text') {
+                    html = `
+                        <div class="block">
+                            <div class="block-header">
+                                <span class="block-title">📝 Texto Enriquecido</span>
+                                <div class="block-actions">
+                                    <button onclick="moveBlock(${b.id}, 'up')">⬆️</button>
+                                    <button onclick="moveBlock(${b.id}, 'down')">⬇️</button>
+                                    <button onclick="deleteBlock(${b.id})">❌</button>
+                                </div>
+                            </div>
+                            <div class="block-content">
+                                <div class="mini-toolbar">
+                                    <button class="mini-btn" onclick="format('bold')"><b>B</b></button>
+                                    <button class="mini-btn" onclick="format('italic')"><i>I</i></button>
+                                    <button class="mini-btn" onclick="format('underline')"><u>U</u></button>
+                                    <select class="mini-select" onchange="format('fontName', this.value)">
+                                        <option value="Arial">Arial</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Courier New">Courier</option>
+                                    </select>
+                                    <select class="mini-select" onchange="format('fontSize', this.value)">
+                                        <option value="3">Normal</option>
+                                        <option value="5">Grande</option>
+                                        <option value="6">Muy Grande</option>
+                                    </select>
+                                    <input type="color" class="mini-select" style="padding:0; width:30px;" onchange="format('foreColor', this.value)">
+                                </div>
+                                <div id="txt-${b.id}" class="rich-input" contenteditable="true" oninput="updateText(${b.id})"></div>
+                            </div>
+                        </div>`;
+                }
+                // Bloque Imagen
+                else if(b.type === 'image') {
+                    html = `
+                        <div class="block">
+                            <div class="block-header">
+                                <span class="block-title">🖼 Imagen</span>
+                                <div class="block-actions">
+                                    <button onclick="moveBlock(${b.id}, 'up')">⬆️</button>
+                                    <button onclick="moveBlock(${b.id}, 'down')">⬇️</button>
+                                    <button onclick="deleteBlock(${b.id})">❌</button>
+                                </div>
+                            </div>
+                            <div class="block-content" style="text-align:center;">
+                                <img id="img-preview-${b.id}" src="${b.content}" style="max-width:100%; display:${b.content ? 'block' : 'none'}; border-radius:4px; margin-bottom:10px;">
+                                <input type="file" accept="image/*" onchange="handleImg(this, ${b.id})" style="display:${b.content ? 'none' : 'inline-block'};">
+                            </div>
+                        </div>`;
+                }
+                // Bloque Video
+                else if(b.type === 'video') {
+                    html = `
+                        <div class="block">
+                            <div class="block-header">
+                                <span class="block-title">▶️ Video</span>
+                                <div class="block-actions">
+                                    <button onclick="moveBlock(${b.id}, 'up')">⬆️</button>
+                                    <button onclick="moveBlock(${b.id}, 'down')">⬇️</button>
+                                    <button onclick="deleteBlock(${b.id})">❌</button>
+                                </div>
+                            </div>
+                            <div class="block-content">
+                                <input type="text" placeholder="Pega la URL de YouTube aquí" value="${b.content}" onchange="updateVideo(${b.id}, this.value)" style="width:100%; padding:8px; background:#000; border:1px solid #555; color:white;">
+                            </div>
+                        </div>`;
+                }
+                container.innerHTML += html;
+            });
+        }
+
+        // Helpers para formato
+        function format(cmd, value=null) {
+            document.execCommand(cmd, false, value);
+        }
+        
+        function updateText(id) {
+            const el = document.getElementById('txt-' + id);
+            const block = blocks.find(b => b.id === id);
+            if(el && block) block.content = el.innerHTML;
+        }
+
+        function handleImg(input, id) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    const block = blocks.find(b => b.id === id);
+                    block.content = e.target.result;
+                    const preview = document.getElementById('img-preview-' + id);
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    input.style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateVideo(id, value) {
+            const block = blocks.find(b => b.id === id);
+            block.content = value;
         }
 
         function previewCover(input) {
@@ -472,201 +314,77 @@
                 reader.onload = function (e) {
                     document.getElementById('cover-preview').src = e.target.result;
                     document.getElementById('cover-preview').style.display = 'block';
-                    document.getElementById('cover-placeholder').style.display = 'none';
+                    document.getElementById('cover-text').style.display = 'none';
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // Constructor de bloques
-        function addBlock(type) {
-            const block = { id: blockIdCounter++, type: type, content: '' };
-            contentBlocks.push(block);
-            renderBlocks();
-        }
-
-        function moveBlock(id, dir) {
-            const index = contentBlocks.findIndex(b => b.id === id);
-            if(dir === 'up' && index > 0) [contentBlocks[index], contentBlocks[index-1]] = [contentBlocks[index-1], contentBlocks[index]];
-            else if(dir === 'down' && index < contentBlocks.length - 1) [contentBlocks[index], contentBlocks[index+1]] = [contentBlocks[index+1], contentBlocks[index]];
-            renderBlocks();
-        }
-
-        function deleteBlock(id) {
-            contentBlocks = contentBlocks.filter(b => b.id !== id);
-            renderBlocks();
-        }
-
-        function handleBlockFile(input, id) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    const block = contentBlocks.find(b => b.id === id);
-                    block.content = e.target.result;
-                    const preview = document.getElementById('preview-'+id);
-                    if(preview) { preview.src = e.target.result; preview.style.display = 'block'; }
-                    input.style.display = 'none';
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function renderBlocks() {
-            const container = document.getElementById('blocks-container');
-            container.innerHTML = '';
-
-            contentBlocks.forEach(block => {
-                let html = '';
-
-                // Bloque de Texto con Editor Rico
-                if(block.type === 'text') {
-                    html = `
-                        <div class="content-block">
-                            <div class="block-header">
-                                <span class="block-type">📝 Texto Enriquecido</span>
-                                <div class="block-actions">
-                                    <button onclick="moveBlock(${block.id}, 'up')">⬆️</button>
-                                    <button onclick="moveBlock(${block.id}, 'down')">⬇️</button>
-                                    <button onclick="deleteBlock(${block.id})">❌</button>
-                                </div>
-                            </div>
-                            <div class="block-body">
-                                <div class="mini-toolbar">
-                                    <button class="tool-btn" onclick="formatBlockText(${block.id}, 'bold')"><b>B</b></button>
-                                    <button class="tool-btn" onclick="formatBlockText(${block.id}, 'italic')"><i>I</i></button>
-                                    <button class="tool-btn" onclick="formatBlockText(${block.id}, 'underline')"><u>U</u></button>
-                                    <select class="tool-select" onchange="formatBlockText(${block.id}, 'fontName', this.value)">
-                                        <option value="Arial">Arial</option>
-                                        <option value="Georgia">Georgia</option>
-                                    </select>
-                                    <select class="tool-select" onchange="formatBlockText(${block.id}, 'fontSize', this.value)">
-                                        <option value="3">Normal</option>
-                                        <option value="5">Grande</option>
-                                    </select>
-                                </div>
-                                <div id="editor-${block.id}" class="block-editor" contenteditable="true" oninput="updateBlockText(${block.id})">${block.content}</div>
-                            </div>
-                        </div>`;
-                }
-                // Bloque Imagen
-                else if(block.type === 'image') {
-                    html = `
-                        <div class="content-block">
-                            <div class="block-header">
-                                <span class="block-type">🖼 Imagen</span>
-                                <div class="block-actions">
-                                    <button onclick="moveBlock(${block.id}, 'up')">⬆️</button>
-                                    <button onclick="moveBlock(${block.id}, 'down')">⬇️</button>
-                                    <button onclick="deleteBlock(${block.id})">❌</button>
-                                </div>
-                            </div>
-                            <div class="block-body" style="text-align:center;">
-                                <img id="preview-${block.id}" src="${block.content}" style="max-width:100%; max-height:200px; border-radius:4px; display:${block.content ? 'block' : 'none'};">
-                                <input type="file" accept="image/*" onchange="handleBlockFile(this, ${block.id})" style="display:${block.content ? 'none' : 'block'}; margin:0 auto;">
-                            </div>
-                        </div>`;
-                }
-                // Bloque Video
-                else if(block.type === 'video') {
-                    html = `
-                        <div class="content-block">
-                            <div class="block-header">
-                                <span class="block-type">▶️ Video</span>
-                                <div class="block-actions">
-                                    <button onclick="moveBlock(${block.id}, 'up')">⬆️</button>
-                                    <button onclick="moveBlock(${block.id}, 'down')">⬇️</button>
-                                    <button onclick="deleteBlock(${block.id})">❌</button>
-                                </div>
-                            </div>
-                            <div class="block-body">
-                                <input type="text" placeholder="URL de YouTube" onchange="updateBlockText(${block.id}, this.value)" value="${block.content}">
-                            </div>
-                        </div>`;
-                }
-
-                container.innerHTML += html;
-            });
-        }
-
-        // Funciones auxiliares para contenido editable dentro de bloques
-        function formatBlockText(id, cmd, value=null) {
-            document.getElementById(`editor-${id}`).focus();
-            if(value) document.execCommand(cmd, false, value);
-            else document.execCommand(cmd, false, null);
-        }
-
-        function updateBlockText(id, value=null) {
-            const block = contentBlocks.find(b => b.id === id);
-            if(block.type === 'text') block.content = document.getElementById(`editor-${id}`).innerHTML;
-            else if(block.type === 'video') block.content = value;
-        }
-
-        // Guardar Top Anime
-        function saveTopAnime() {
-            const newData = [];
-            for(let i=0; i<3; i++) {
-                newData.push({
-                    rank: i+1,
-                    title: document.getElementById(`top-title-${i}`).value,
-                    genre: document.getElementById(`top-genre-${i}`).value
-                });
-            }
-            topAnimeData = newData;
-            localStorage.setItem('topAnime', JSON.stringify(topAnimeData));
-            loadTopAnime();
-            alert("Top Anime actualizado");
-        }
-
-        // Publicar Artículo
-        function publishArticle() {
+        // --- PUBLICAR ---
+        function publishNews() {
             const title = document.getElementById('main-title').value;
-            const coverImg = document.getElementById('cover-preview').src;
+            const cover = document.getElementById('cover-preview').src;
             const date = document.getElementById('main-date').value;
 
-            if(!title || !coverImg) { alert("Falta título o portada"); return; }
+            if(!title || !cover) { alert("Falta título o portada"); return; }
 
+            // Construimos el HTML final
             let finalHtml = '';
             
-            // Sincronizar contenido de los bloques de texto antes de guardar
-            contentBlocks.forEach(block => {
-                if(block.type === 'text') {
-                    // Ya está guardado por el evento oninput, pero nos aseguramos
-                    // block.content ya tiene el HTML
-                    finalHtml += `<div style="margin-bottom:20px;">${block.content}</div>`;
+            // Sincronizar texto
+            blocks.forEach(b => {
+                if(b.type === 'text') {
+                    finalHtml += `<div style="margin-bottom:20px;">${b.content}</div>`;
                 }
-                else if(block.type === 'image' && block.content) {
-                    finalHtml += `<img src="${block.content}" style="display:block; max-width:100%; margin:20px auto; border-radius:8px;">`;
+                else if(b.type === 'image' && b.content) {
+                    finalHtml += `<img src="${b.content}" style="display:block; max-width:100%; margin:20px auto; border-radius:8px;">`;
                 }
-                else if(block.type === 'video' && block.content) {
+                else if(b.type === 'video' && b.content) {
                     let videoId = '';
                     let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                    let match = block.content.match(regExp);
+                    let match = b.content.match(regExp);
                     if (match && match[2].length == 11) {
                         videoId = match[2];
-                        finalHtml += `<div class="video-container"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe></div>`;
+                        finalHtml += `<div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; margin:30px 0;"><iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute; top:0; left:0; width:100%; height:100%;" frameborder="0" allowfullscreen></iframe></div>`;
                     }
                 }
             });
 
+            // Guardar en localStorage
+            const currentNews = JSON.parse(localStorage.getItem('blogNews')) || [];
             const newArticle = {
                 id: Date.now(),
                 title: title,
-                img: coverImg,
+                img: cover,
                 date: date,
                 content: finalHtml,
                 comments: []
             };
+            currentNews.unshift(newArticle);
+            localStorage.setItem('blogNews', JSON.stringify(currentNews));
 
-            newsData.unshift(newArticle);
-            localStorage.setItem('blogNews', JSON.stringify(newsData));
-
-            alert("¡Noticia publicada!");
-            closeAdmin();
-            loadNews();
+            alert("¡Noticia publicada con éxito!");
+            
+            // Reset
+            document.getElementById('main-title').value = '';
+            document.getElementById('cover-preview').style.display = 'none';
+            document.getElementById('cover-text').style.display = 'block';
+            blocks = [];
+            renderBlocks();
         }
 
-        // Inicio
-        loadAll();
+        function saveTop() {
+            const newTop = [];
+            for(let i=0; i<3; i++) {
+                newTop.push({
+                    rank: i+1,
+                    title: document.getElementById('top-title-'+i).value,
+                    genre: document.getElementById('top-genre-'+i).value
+                });
+            }
+            localStorage.setItem('topAnime', JSON.stringify(newTop));
+            alert("Top Anime actualizado");
+        }
 
     </script>
 </body>
